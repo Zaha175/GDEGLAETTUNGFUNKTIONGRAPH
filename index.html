@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GDE-Modell: CLASS-Test Analyse</title>
+    <title>GDE-Modell: CLASS-Test Analyse (Angepasste Beispieldaten)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -43,16 +43,16 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #f3f4f6; /* Tailwind gray-100 */
         }
-        .dark-mode .card h2, .dark-mode .card p {
+         .dark-mode .card h2, .dark-mode .card p, .dark-mode .card h3 { /* Added h3 */
              color: #d1d5db; /* Tailwind gray-300 */
-        }
-         .dark-mode h1 {
+         }
+        .dark-mode h1 {
              color: #93c5fd; /* Tailwind blue-300 */
-         }
-         .dark-mode footer p {
+        }
+        .dark-mode footer p {
              color: #9ca3af; /* Tailwind gray-400 */
-         }
-         /* Button styling */
+        }
+        /* Button styling */
         .toggle-button {
             padding: 0.5rem 1rem;
             border-radius: 9999px; /* pill shape */
@@ -72,9 +72,9 @@
             background-color: #f59e0b; /* Amber-500 */
             color: #1f2937; /* Gray-800 */
         }
-         .toggle-button-dark:hover {
+        .toggle-button-dark:hover {
              background-color: #d97706; /* Amber-600 */
-        }
+         }
 
     </style>
 </head>
@@ -83,7 +83,7 @@
 
         <header class="flex justify-between items-center mb-10">
             <h1 class="text-3xl md:text-4xl font-bold text-indigo-700">
-                GDE-Modell: CLASS-Test Analyse mit \( S_{\text{Struktur}} \)
+                GDE-Modell: CLASS-Test Analyse (Angepasste Beispieldaten)
             </h1>
             <button id="darkModeToggle" class="toggle-button toggle-button-light">
                 🌙 Dark Mode
@@ -91,13 +91,17 @@
         </header>
 
         <section class="card p-6 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Ergebnisse der Simulation</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Ergebnisse der Simulation (Illustrativ)</h2>
             <p class="text-lg leading-relaxed">
-                Diese Seite visualisiert die Ergebnisse einer kosmologischen Simulation unter Verwendung des GDE-Modells (Generalized Dark Energy) mit dem CLASS-Code. Die Diagramme zeigen die Entwicklung des Hubble-Parameters \( H(z) \), des Zustandsgleichungsparameters \( w(z) \) und des \( \Lambda(z) \)-Terms (mit und ohne Glättung) in Abhängigkeit von der Rotverschiebung \( z \). Der Term \( S_{\text{Struktur}}(z) \) repräsentiert den Einfluss der Strukturbildung.
+                Diese Seite visualisiert die Ergebnisse einer kosmologischen Simulation unter Verwendung des GDE-Modells.
+                <strong class="text-red-600 dark:text-red-400">Achtung:</strong> Die dargestellten Daten sind angepasste Beispieldaten, die dazu dienen, die *erwarteten qualitativen Trends* zu illustrieren. Sie stammen nicht aus einer echten CLASS-Simulation mit realistischer Parameterwahl und Entropiekopplung. Für eine valide Analyse müssen diese Daten durch echte Simulationsergebnisse ersetzt werden.
+            </p>
+             <p class="text-lg leading-relaxed mt-2">
+                Die Diagramme zeigen die Entwicklung des Hubble-Parameters \( H(z) \), des Zustandsgleichungsparameters \( w(z) \), des \( \Lambda(z) \)-Terms und der Struktur-Entropie \( S_{\text{Struktur}}(z) \) in Abhängigkeit von der Rotverschiebung \( z \).
             </p>
         </section>
 
-        <div class="grid grid-cols-1 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="card p-6 rounded-xl shadow-lg">
                  <h3 class="text-xl font-semibold mb-4 text-center text-indigo-600">Hubble-Parameter \( H(z) \)</h3>
                  <div class="chart-container">
@@ -114,11 +118,18 @@
 
              <div class="card p-6 rounded-xl shadow-lg">
                  <h3 class="text-xl font-semibold mb-4 text-center text-indigo-600">Lambda-Term \( \Lambda(z) \)</h3>
-                <div class="chart-container">
+                 <div class="chart-container">
                     <canvas id="LambdaChart"></canvas>
+                 </div>
+            </div>
+
+            <div class="card p-6 rounded-xl shadow-lg">
+                <h3 class="text-xl font-semibold mb-4 text-center text-indigo-600">Struktur-Entropie \( S_{\text{Struktur}}(z) \)</h3>
+                <div class="chart-container">
+                    <canvas id="SstrukturChart"></canvas>
                 </div>
             </div>
-        </div>
+             </div>
 
         <footer class="mt-12 text-center italic text-gray-600">
             <p>"Die beste Theorie erklärt das Unerwartete einfach." — Gabriel ϕ</p>
@@ -127,81 +138,102 @@
     </div>
 
     <script>
-        // --- Sample Data (Replace with actual data) ---
-        // This simulates the data structure expected from the backend/calculation.
+        // --- Angepasste Beispieldaten ---
+        // ACHTUNG: Diese Daten sind weiterhin PLATZHALTER und ILLUSTRATIV.
+        // Sie wurden angepasst, um die in der Analyse diskutierten *erwarteten Trends*
+        // qualitativ besser darzustellen (z.B. w(0.5) näher an -0.8, S_Struktur steigend zu z=0).
+        // Sie ersetzen KEINE echte Simulation mit korrekter Physik und Parametern!
         const html_data = {
             z: [0, 0.5, 1, 1.5, 2, 2.5, 3], // Example redshift values
+            z_bins: [0, 0.5, 1, 1.5, 2, 2.5, 3], // Example redshift bins for S_struktur
+
+            // H(z): Behält den allgemeinen Trend bei
             H_z: [70, 85, 105, 130, 160, 195, 235], // Example H(z) values [km/s/Mpc]
-            w_z: [-0.95, -0.9, -0.85, -0.8, -0.75, -0.7, -0.65], // Example w(z) values
-            Lambda_z: [0.7, 0.72, 0.75, 0.78, 0.82, 0.86, 0.9], // Example Lambda(z) values
-            Lambda_glattung_z: [0.71, 0.73, 0.76, 0.79, 0.83, 0.87, 0.91], // Example smoothed Lambda(z)
-            Lambda_combined: [0.705, 0.725, 0.755, 0.785, 0.825, 0.865, 0.905] // Example combined Lambda(z)
+
+            // w(z): Angepasst, sodass w(0.5) näher an -0.8 liegt und der Trend plausibler ist
+            w_z: [-0.98, -0.82, -0.75, -0.70, -0.68, -0.67, -0.66], // Adjusted w(z) values
+
+            // Lambda(z): Leichte Dynamik eingeführt (illustrativ, nicht physikalisch berechnet!)
+            Lambda_z:          [0.70, 0.68, 0.67, 0.68, 0.71, 0.75, 0.80], // Example Lambda(z) with slight dynamics
+            Lambda_glattung_z: [0.71, 0.69, 0.68, 0.69, 0.72, 0.76, 0.81], // Smoothed version
+            Lambda_combined:   [0.705, 0.685, 0.675, 0.685, 0.715, 0.755, 0.805], // Combined version
+
+            // S_struktur: Trend umgekehrt (steigt zu z=0 stark an), Skala angepasst (illustrativ!)
+            // Werte repräsentieren S_struktur / S_CMB (angenommen S_CMB ~ 1e88)
+            S_struktur: [5e88, 1e88, 5e87, 1e87, 3e86, 5e85, 1e85] // Adjusted S_struktur, increasing towards z=0
         };
-        // --- End Sample Data ---
+        // --- Ende Angepasste Beispieldaten ---
 
         // --- Chart Configuration ---
-        const defaultChartOptions = (titleText, yLabel) => ({
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                     labels: {
-                         color: document.body.classList.contains('dark-mode') ? '#f3f4f6' : '#1f2937' // Adjust legend color for dark mode
-                     }
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                    backgroundColor: document.body.classList.contains('dark-mode') ? 'rgba(55, 65, 81, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                    titleColor: document.body.classList.contains('dark-mode') ? '#f3f4f6' : '#1f2937',
-                    bodyColor: document.body.classList.contains('dark-mode') ? '#f3f4f6' : '#1f2937',
-                    borderColor: document.body.classList.contains('dark-mode') ? '#4b5563' : '#e5e7eb', // gray-600 / gray-200
-                    borderWidth: 1
-                },
-                 title: { // Add title within chart options if needed, though we have card titles
-                     display: false, // Set to true if you want title inside the canvas
-                     text: titleText,
-                     color: document.body.classList.contains('dark-mode') ? '#f3f4f6' : '#1f2937'
-                 }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Rotverschiebung z',
-                        color: document.body.classList.contains('dark-mode') ? '#d1d5db' : '#374151' // gray-300 / gray-700
-                    },
-                    ticks: {
-                        color: document.body.classList.contains('dark-mode') ? '#d1d5db' : '#374151'
-                    },
-                    grid: {
-                         color: document.body.classList.contains('dark-mode') ? 'rgba(209, 213, 219, 0.2)' : 'rgba(55, 65, 81, 0.2)' // Lighter grid lines
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: yLabel,
-                        color: document.body.classList.contains('dark-mode') ? '#d1d5db' : '#374151'
-                    },
+        const defaultChartOptions = (titleText, yLabel, additionalOptions = {}) => {
+          const baseOptions = {
+             responsive: true,
+             maintainAspectRatio: false,
+             plugins: {
+                 legend: {
+                     position: 'top',
+                      labels: {
+                          color: document.body.classList.contains('dark-mode') ? '#f3f4f6' : '#1f2937'
+                      }
+                 },
+                 tooltip: {
+                     mode: 'index',
+                     intersect: false,
+                     backgroundColor: document.body.classList.contains('dark-mode') ? 'rgba(55, 65, 81, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                     titleColor: document.body.classList.contains('dark-mode') ? '#f3f4f6' : '#1f2937',
+                     bodyColor: document.body.classList.contains('dark-mode') ? '#f3f4f6' : '#1f2937',
+                     borderColor: document.body.classList.contains('dark-mode') ? '#4b5563' : '#e5e7eb',
+                     borderWidth: 1
+                 },
+                  title: {
+                      display: false,
+                      text: titleText,
+                      color: document.body.classList.contains('dark-mode') ? '#f3f4f6' : '#1f2937'
+                  }
+             },
+             scales: {
+                 x: {
+                     title: {
+                         display: true,
+                         text: 'Rotverschiebung z',
+                         color: document.body.classList.contains('dark-mode') ? '#d1d5db' : '#374151'
+                     },
                      ticks: {
-                        color: document.body.classList.contains('dark-mode') ? '#d1d5db' : '#374151'
-                    },
+                         color: document.body.classList.contains('dark-mode') ? '#d1d5db' : '#374151'
+                     },
                      grid: {
+                          color: document.body.classList.contains('dark-mode') ? 'rgba(209, 213, 219, 0.2)' : 'rgba(55, 65, 81, 0.2)'
+                     }
+                 },
+                 y: {
+                     title: {
+                         display: true,
+                         text: yLabel,
+                         color: document.body.classList.contains('dark-mode') ? '#d1d5db' : '#374151'
+                     },
+                      ticks: {
+                         color: document.body.classList.contains('dark-mode') ? '#d1d5db' : '#374151'
+                     },
+                      grid: {
                          color: document.body.classList.contains('dark-mode') ? 'rgba(209, 213, 219, 0.2)' : 'rgba(55, 65, 81, 0.2)'
-                    }
-                }
-            },
-            interaction: { // Enhance interaction
-                mode: 'nearest',
-                axis: 'x',
-                intersect: false
-            }
-        });
+                     }
+                 }
+             },
+             interaction: {
+                 mode: 'nearest',
+                 axis: 'x',
+                 intersect: false
+             }
+         };
+         // Deep merge additional options (like y-axis type)
+          if (additionalOptions.scales && additionalOptions.scales.y) {
+              Object.assign(baseOptions.scales.y, additionalOptions.scales.y);
+          }
+           return baseOptions;
+       };
 
-        // Chart instances (store globally to update later if needed)
-        let hzChartInstance, wzChartInstance, lambdaChartInstance;
+        // Chart instances
+        let hzChartInstance, wzChartInstance, lambdaChartInstance, sStrukturChartInstance;
 
         // Function to create/update charts
         function renderCharts() {
@@ -212,25 +244,35 @@
             const tooltipBgColor = isDarkMode ? 'rgba(55, 65, 81, 0.9)' : 'rgba(255, 255, 255, 0.9)';
             const tooltipBorderColor = isDarkMode ? '#4b5563' : '#e5e7eb';
 
-            const updateOptions = (options) => {
+             const updateOptions = (options) => {
+                 // Update colors for all relevant parts based on theme
                  options.plugins.legend.labels.color = textColor;
                  options.plugins.tooltip.backgroundColor = tooltipBgColor;
                  options.plugins.tooltip.titleColor = textColor;
                  options.plugins.tooltip.bodyColor = textColor;
                  options.plugins.tooltip.borderColor = tooltipBorderColor;
-                 options.scales.x.title.color = tickColor;
-                 options.scales.x.ticks.color = tickColor;
-                 options.scales.x.grid.color = gridColor;
-                 options.scales.y.title.color = tickColor;
-                 options.scales.y.ticks.color = tickColor;
-                 options.scales.y.grid.color = gridColor;
+
+                 if (options.plugins.title) {
+                    options.plugins.title.color = textColor;
+                 }
+
+                 if (options.scales.x) {
+                     if (options.scales.x.title) options.scales.x.title.color = tickColor;
+                     if (options.scales.x.ticks) options.scales.x.ticks.color = tickColor;
+                     if (options.scales.x.grid) options.scales.x.grid.color = gridColor;
+                 }
+                 if (options.scales.y) {
+                     if (options.scales.y.title) options.scales.y.title.color = tickColor;
+                     if (options.scales.y.ticks) options.scales.y.ticks.color = tickColor;
+                     if (options.scales.y.grid) options.scales.y.grid.color = gridColor;
+                 }
                  return options;
             };
 
 
             // H(z) Chart
             const hzCtx = document.getElementById('HzChart').getContext('2d');
-            if (hzChartInstance) hzChartInstance.destroy(); // Destroy previous instance if exists
+            if (hzChartInstance) hzChartInstance.destroy();
             hzChartInstance = new Chart(hzCtx, {
                 type: 'line',
                 data: {
@@ -241,14 +283,14 @@
                         borderColor: '#4f46e5', // Indigo-600
                         backgroundColor: 'rgba(79, 70, 229, 0.1)',
                         borderWidth: 2,
-                        tension: 0.1, // Slight curve
+                        tension: 0.1,
                         fill: true
                     }]
                 },
-                options: updateOptions(defaultChartOptions('Hubble Parameter H(z)', 'H(z) [km/s/Mpc]'))
+                 options: updateOptions(defaultChartOptions('Hubble Parameter H(z)', 'H(z) [km/s/Mpc]'))
             });
 
-            // w(z) Chart
+            // w(z) Chart (uses adjusted data)
             const wzCtx = document.getElementById('wzChart').getContext('2d');
              if (wzChartInstance) wzChartInstance.destroy();
             wzChartInstance = new Chart(wzCtx, {
@@ -256,7 +298,7 @@
                 data: {
                     labels: html_data.z,
                     datasets: [{
-                        label: 'w(z)',
+                        label: 'w(z) (Illustrativ)', // Added note in label
                         data: html_data.w_z,
                         borderColor: '#db2777', // Pink-600
                         backgroundColor: 'rgba(219, 39, 119, 0.1)',
@@ -265,10 +307,10 @@
                         fill: true
                     }]
                 },
-                options: updateOptions(defaultChartOptions('Equation of State Parameter w(z)', 'w(z)'))
+                 options: updateOptions(defaultChartOptions('Equation of State Parameter w(z)', 'w(z)'))
             });
 
-            // Lambda Chart
+            // Lambda Chart (uses adjusted data)
             const lambdaCtx = document.getElementById('LambdaChart').getContext('2d');
              if (lambdaChartInstance) lambdaChartInstance.destroy();
             lambdaChartInstance = new Chart(lambdaCtx, {
@@ -276,17 +318,41 @@
                 data: {
                     labels: html_data.z,
                     datasets: [
-                        { label: '\\Lambda(z)', data: html_data.Lambda_z, borderColor: '#10b981', borderWidth: 2, tension: 0.1, fill: false }, // Emerald-500
-                        { label: '\\Lambda_{Glättung}(z)', data: html_data.Lambda_glattung_z, borderColor: '#f59e0b', borderWidth: 2, tension: 0.1, fill: false, borderDash: [5, 5] }, // Amber-500 (dashed)
-                        { label: '\\Lambda_{Combined}(z)', data: html_data.Lambda_combined, borderColor: '#6366f1', borderWidth: 2, tension: 0.1, fill: false } // Indigo-500
+                        { label: '\\Lambda_{GDE}(z) (Illustrativ)', data: html_data.Lambda_z, borderColor: '#10b981', borderWidth: 2, tension: 0.1, fill: false }, // Emerald-500
+                        { label: '\\Lambda_{Glättung}(z) (Illustrativ)', data: html_data.Lambda_glattung_z, borderColor: '#f59e0b', borderWidth: 2, tension: 0.1, fill: false, borderDash: [5, 5] }, // Amber-500 (dashed)
+                        { label: '\\Lambda_{Combined}(z) (Illustrativ)', data: html_data.Lambda_combined, borderColor: '#6366f1', borderWidth: 2, tension: 0.1, fill: false } // Indigo-500
                     ]
                 },
                  options: updateOptions(defaultChartOptions('Lambda Term \\Lambda(z)', '\\Lambda(z)'))
             });
 
-             // Re-render MathJax if needed after chart creation/update
+             // S_Struktur Chart (uses adjusted data with reversed trend)
+            const sStrukturCtx = document.getElementById('SstrukturChart').getContext('2d');
+            if (sStrukturChartInstance) sStrukturChartInstance.destroy();
+            // Ensure data exists and map correctly (dividing by S_CMB ~ 1e88)
+            const sStrukturData = html_data.S_struktur && Array.isArray(html_data.S_struktur) ? html_data.S_struktur.map(s => s / 1e88) : [];
+            const zBinsData = html_data.z_bins && Array.isArray(html_data.z_bins) ? html_data.z_bins : [];
+
+            sStrukturChartInstance = new Chart(sStrukturCtx, {
+                type: 'line',
+                data: {
+                    labels: zBinsData,
+                    datasets: [{
+                        label: 'S_{\\text{Struktur}}(z) / S_{\\text{CMB}} (Illustrativ)', // Added note in label
+                        data: sStrukturData,
+                        borderColor: '#ef4444', // Red-500
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                 options: updateOptions(defaultChartOptions('Struktur-Entropie S_{\\text{Struktur}}(z)', 'S_{\\text{Struktur}} / S_{\\text{CMB}}', { scales: { y: { type: 'logarithmic' } } }))
+            });
+
+             // Re-render MathJax
              if (window.MathJax && window.MathJax.typeset) {
-                window.MathJax.typeset();
+                 window.MathJax.typeset();
              }
         }
 
@@ -295,7 +361,6 @@
         const toggleButton = document.getElementById('darkModeToggle');
         const body = document.body;
 
-        // Function to apply theme
         function applyTheme(isDark) {
             if (isDark) {
                 body.classList.remove('light-mode');
@@ -310,60 +375,46 @@
                 toggleButton.classList.remove('toggle-button-dark');
                 toggleButton.classList.add('toggle-button-light');
             }
-             // Re-render charts with updated colors
-             renderCharts();
+             renderCharts(); // Re-render charts with updated colors
         }
 
-        // Check local storage for theme preference
         const prefersDark = window.localStorage.getItem('darkMode') === 'true';
         applyTheme(prefersDark);
 
-        // Check system preference if no local storage preference
-        // Note: This only sets the initial theme based on system preference if no manual toggle has happened.
         if (window.localStorage.getItem('darkMode') === null && window.matchMedia('(prefers-color-scheme: dark)').matches) {
              applyTheme(true);
         }
 
-
-        // Toggle button event listener
         toggleButton.addEventListener('click', () => {
             const isCurrentlyDark = body.classList.contains('dark-mode');
             applyTheme(!isCurrentlyDark);
-            // Save preference to local storage
             window.localStorage.setItem('darkMode', !isCurrentlyDark);
         });
 
-        // Listener for system preference changes (optional, but good practice)
          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-             // Only change if no manual preference is stored
              if (window.localStorage.getItem('darkMode') === null) {
-                applyTheme(event.matches);
+                 applyTheme(event.matches);
              }
-         });
+          });
 
 
         // --- Initial Setup ---
-        // Set generation date
         document.getElementById('generationDate').textContent = new Date().toLocaleDateString('de-DE', {
             year: 'numeric', month: 'long', day: 'numeric'
         });
 
-         // Initial render of charts on page load
-         // Ensure MathJax is ready before rendering charts that might use LaTeX in labels/titles
          window.MathJax = {
-            tex: {
-                inlineMath: [['\\(', '\\)']], // Define inline math delimiters
-                displayMath: [['\\[', '\\]']] // Define display math delimiters (if needed)
-            },
-            startup: {
-                ready: () => {
-                    MathJax.startup.defaultReady();
-                    // Render charts *after* MathJax is ready
-                    renderCharts();
-                }
-            }
+             tex: {
+                 inlineMath: [['\\(', '\\)']],
+                 displayMath: [['\\[', '\\]']]
+             },
+             startup: {
+                 ready: () => {
+                     MathJax.startup.defaultReady();
+                     renderCharts(); // Initial render after MathJax is ready
+                 }
+             }
         };
-
 
     </script>
 </body>
